@@ -36,6 +36,7 @@ public class JaguarSuite extends Suite {
 	private Jaguar jaguar;
 	private Heuristic heuristic;
 	private File targetDir;
+	private Boolean isDataflow;
 
 	/**
 	 * Constructor.
@@ -46,11 +47,13 @@ public class JaguarSuite extends Suite {
 	 * @throws ClassNotFoundException
 	 */
 	public JaguarSuite(final Class<?> clazz) throws InitializationError,
-			ClassNotFoundException {
+	ClassNotFoundException {
 		super(clazz, FileUtils.findTestClasses(clazz));
 		heuristic = getHeuristic(clazz);
+		isDataflow = getDataflow(clazz);
 		targetDir = FileUtils.findClassDir(clazz).getParentFile();
 	}
+
 
 	/**
 	 * Return the heuristic based on the enum passed on the annotation
@@ -72,6 +75,13 @@ public class JaguarSuite extends Suite {
 		}
 	}
 
+
+	private Boolean getDataflow(Class<?> klass) {
+		JaguarRunnerHeuristic annotation = klass
+				.getAnnotation(JaguarRunnerHeuristic.class);
+		return annotation.isDataflow();
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * 
@@ -91,9 +101,9 @@ public class JaguarSuite extends Suite {
 	}
 
 	private void initializeBeforeTests() {
-		jaguar = new Jaguar(heuristic, targetDir);
+		jaguar = new Jaguar(heuristic, targetDir,isDataflow);
 		try {
-			tcpClient = new JacocoTCPClient();
+			tcpClient = new JacocoTCPClient(isDataflow);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

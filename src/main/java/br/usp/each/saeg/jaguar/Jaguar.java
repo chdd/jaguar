@@ -8,12 +8,15 @@ import java.util.HashMap;
 
 import javax.xml.bind.JAXB;
 
+import org.jacoco.core.analysis.AbstractAnalyzer;
 import org.jacoco.core.analysis.Analyzer;
 import org.jacoco.core.analysis.CoverageBuilder;
+import org.jacoco.core.analysis.DataflowAnalyzer;
 import org.jacoco.core.analysis.IClassCoverage;
 import org.jacoco.core.analysis.ILine;
 import org.jacoco.core.analysis.IMethodCoverage;
-import org.jacoco.core.data.ExecutionDataStore;
+import org.jacoco.core.data.AbstractExecutionDataStore;
+import org.jacoco.core.data.DataflowExecutionDataStore;
 
 import br.usp.each.saeg.jaguar.builder.CodeForestXmlBuilder;
 import br.usp.each.saeg.jaguar.heuristic.Heuristic;
@@ -36,6 +39,7 @@ public class Jaguar {
 	private HashMap<Integer, TestRequirement> testRequirements = new HashMap<Integer, TestRequirement>();
 	private Heuristic heuristic;
 	private File classesDir;
+	private Boolean isDataflow;
 
 	/**
 	 * Construct the Jaguar object.
@@ -45,9 +49,14 @@ public class Jaguar {
 	 * @param targetDir
 	 *            the target dir created by eclipse
 	 */
-	public Jaguar(Heuristic heuristic, File classesDir) {
+	public Jaguar(Heuristic heuristic, File classesDir, Boolean isDataflow) {
 		this.heuristic = heuristic;
 		this.classesDir = classesDir;
+		this.isDataflow = isDataflow;
+	}
+	
+	public Jaguar(Heuristic heuristic, File classesDir) {
+		this(heuristic,classesDir,false);
 	}
 
 	/**
@@ -57,18 +66,32 @@ public class Jaguar {
 	 *            the covarege data from Jacoco
 	 * @param currentTestFailed
 	 *            result of the test
+	 * @throws IOException 
 	 * 
 	 */
-	public void collect(final ExecutionDataStore executionData, boolean currentTestFailed) {
+	public void collect(final AbstractExecutionDataStore executionData, boolean currentTestFailed) throws IOException {
+		System.out.println("Jaguar.collect");
 		final CoverageBuilder coverageVisitor = new CoverageBuilder();
-		Analyzer analyzer = new Analyzer(executionData, coverageVisitor);
-
-		try {
+		if (executionData.getClass().equals(DataflowExecutionDataStore.class)){
+			AbstractAnalyzer analyzer = new DataflowAnalyzer(executionData, coverageVisitor);
 			analyzer.analyzeAll(classesDir);
-		} catch (IOException e) {
-			e.printStackTrace();
+			collectLineCoverage(currentTestFailed, coverageVisitor);
+		}else{
+			AbstractAnalyzer analyzer = new Analyzer(executionData, coverageVisitor);
+			analyzer.analyzeAll(classesDir);
+			collectDuaCoverage(currentTestFailed, coverageVisitor);
 		}
 
+	}
+
+	private void collectDuaCoverage(boolean currentTestFailed,
+			CoverageBuilder coverageVisitor) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void collectLineCoverage(boolean currentTestFailed,
+			final CoverageBuilder coverageVisitor) {
 		for (IClassCoverage clazz : coverageVisitor.getClasses()) {
 			CoverageStatus coverageStatus = CoverageStatus.as(clazz.getClassCounter().getStatus());
 			if (CoverageStatus.FULLY_COVERED == coverageStatus || CoverageStatus.PARTLY_COVERED == coverageStatus) {
@@ -123,7 +146,7 @@ public class Jaguar {
 		} else {
 			testRequirement = foundRequirement;
 		}
-
+		
 		if (failed) {
 			testRequirement.increaseFailed();
 		} else {

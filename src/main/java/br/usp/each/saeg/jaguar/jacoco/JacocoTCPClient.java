@@ -5,6 +5,8 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import org.jacoco.core.data.AbstractExecutionDataStore;
+import org.jacoco.core.data.DataflowExecutionDataStore;
 import org.jacoco.core.data.ExecutionDataStore;
 import org.jacoco.core.data.SessionInfoStore;
 import org.jacoco.core.runtime.RemoteControlReader;
@@ -22,17 +24,27 @@ public final class JacocoTCPClient {
 	private final Socket socket;
 	private final RemoteControlWriter writer;
 	private final RemoteControlReader reader;
+	private final Boolean isDataflow;
 	
-	public JacocoTCPClient() throws UnknownHostException, IOException{
+	public JacocoTCPClient(Boolean isDataflow) throws UnknownHostException, IOException{
 		socket = new Socket(InetAddress.getByName(ADDRESS), PORT);
 		writer = new RemoteControlWriter(socket.getOutputStream());
 		reader = new RemoteControlReader(socket.getInputStream());
+		this.isDataflow = isDataflow;
 	}
 	
-	public ExecutionDataStore read() throws IOException {
+	public JacocoTCPClient() throws UnknownHostException, IOException{
+		this(false);
+	}
+	
+	public AbstractExecutionDataStore read() throws IOException {
 		SessionInfoStore sessionInfo = new SessionInfoStore();
-		ExecutionDataStore executionData = new ExecutionDataStore();
-
+		AbstractExecutionDataStore executionData = null;
+		if(isDataflow){
+			executionData = new DataflowExecutionDataStore();
+		}else{
+			executionData = new ExecutionDataStore();
+		}
 		reader.setSessionInfoVisitor(sessionInfo);
 		reader.setExecutionDataVisitor(executionData);
 
