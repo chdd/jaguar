@@ -75,19 +75,18 @@ public class Jaguar {
 		if (executionData.getClass().equals(DataflowExecutionDataStore.class)){
 			AbstractAnalyzer analyzer = new DataflowAnalyzer(executionData, coverageVisitor);
 			analyzer.analyzeAll(classesDir);
-			collectLineCoverage(currentTestFailed, coverageVisitor);
+			collectDuaCoverage(currentTestFailed, coverageVisitor);
 		}else{
 			AbstractAnalyzer analyzer = new Analyzer(executionData, coverageVisitor);
 			analyzer.analyzeAll(classesDir);
-			collectDuaCoverage(currentTestFailed, coverageVisitor);
+			collectLineCoverage(currentTestFailed, coverageVisitor);
 		}
 
 	}
 
 	private void collectDuaCoverage(boolean currentTestFailed,
 			CoverageBuilder coverageVisitor) {
-		// TODO Auto-generated method stub
-		
+		collectLineCoverage(currentTestFailed, coverageVisitor);
 	}
 
 	private void collectLineCoverage(boolean currentTestFailed,
