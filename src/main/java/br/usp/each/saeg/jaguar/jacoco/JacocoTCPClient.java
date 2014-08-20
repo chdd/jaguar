@@ -39,12 +39,7 @@ public final class JacocoTCPClient {
 	
 	public AbstractExecutionDataStore read() throws IOException {
 		SessionInfoStore sessionInfo = new SessionInfoStore();
-		AbstractExecutionDataStore executionData = null;
-		if(isDataflow){
-			executionData = new DataflowExecutionDataStore();
-		}else{
-			executionData = new ExecutionDataStore();
-		}
+		AbstractExecutionDataStore executionData = isDataflow ? new DataflowExecutionDataStore() : new ExecutionDataStore();
 		reader.setSessionInfoVisitor(sessionInfo);
 		reader.setExecutionDataVisitor(executionData);
 
