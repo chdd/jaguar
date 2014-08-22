@@ -12,6 +12,7 @@ import org.jacoco.core.analysis.AbstractAnalyzer;
 import org.jacoco.core.analysis.Analyzer;
 import org.jacoco.core.analysis.CoverageBuilder;
 import org.jacoco.core.analysis.DataflowAnalyzer;
+import org.jacoco.core.analysis.DuaCoverageBuilder;
 import org.jacoco.core.analysis.IClassCoverage;
 import org.jacoco.core.analysis.ILine;
 import org.jacoco.core.analysis.IMethodCoverage;
@@ -71,12 +72,13 @@ public class Jaguar {
 	 */
 	public void collect(final AbstractExecutionDataStore executionData, boolean currentTestFailed) throws IOException {
 		System.out.println("Jaguar.collect");
-		final CoverageBuilder coverageVisitor = new CoverageBuilder();
 		if (executionData.getClass().equals(DataflowExecutionDataStore.class)){
-			AbstractAnalyzer analyzer = new DataflowAnalyzer(executionData, coverageVisitor);
+			DuaCoverageBuilder duaCoverageBuilder = new DuaCoverageBuilder();
+			AbstractAnalyzer analyzer = new DataflowAnalyzer(executionData, duaCoverageBuilder);
 			analyzer.analyzeAll(classesDir);
-			collectDuaCoverage(currentTestFailed, coverageVisitor);
+			collectDuaCoverage(currentTestFailed, duaCoverageBuilder);
 		}else{
+			CoverageBuilder coverageVisitor = new CoverageBuilder();
 			AbstractAnalyzer analyzer = new Analyzer(executionData, coverageVisitor);
 			analyzer.analyzeAll(classesDir);
 			collectLineCoverage(currentTestFailed, coverageVisitor);
@@ -85,8 +87,8 @@ public class Jaguar {
 	}
 
 	private void collectDuaCoverage(boolean currentTestFailed,
-			CoverageBuilder coverageVisitor) {
-		collectLineCoverage(currentTestFailed, coverageVisitor);
+			DuaCoverageBuilder coverageVisitor) {
+		//TODO
 	}
 
 	private void collectLineCoverage(boolean currentTestFailed,
