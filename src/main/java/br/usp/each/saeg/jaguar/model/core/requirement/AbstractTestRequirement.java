@@ -1,34 +1,32 @@
-package br.usp.each.saeg.jaguar.model.core;
+package br.usp.each.saeg.jaguar.model.core.requirement;
 
-public class TestRequirement implements Comparable<TestRequirement> {
+public abstract class AbstractTestRequirement implements Comparable<AbstractTestRequirement> {
 
-	private final String className;
+	protected String className;
 	private Integer classFirstLine;
 
 	private Integer methodId;
 	private Integer methodLine;
 	private String methodSignature;
 	
-	private final Integer lineNumber;
-	
 	private int cef = 0;
 	private int cep = 0;
 	private Double suspiciousness; 
 
-	public TestRequirement(String className, Integer lineNumber) {
-		super();
-		this.className = className;
-		this.lineNumber = lineNumber;
+	public enum Type{
+		LINE, DUA;
 	}
-
+	
+	public abstract Type getType();
+	
 	public String getClassName() {
 		return className;
 	}
-
-	public Integer getLineNumber() {
-		return lineNumber;
-	}
 	
+	public void setClassName(String className) {
+		this.className = className;
+	}
+
 	public Integer getClassFirstLine() {
 		return classFirstLine;
 	}
@@ -91,8 +89,6 @@ public class TestRequirement implements Comparable<TestRequirement> {
 		int result = 1;
 		result = prime * result
 				+ ((className == null) ? 0 : className.hashCode());
-		result = prime * result
-				+ ((lineNumber == null) ? 0 : lineNumber.hashCode());
 		return result;
 	}
 
@@ -104,21 +100,16 @@ public class TestRequirement implements Comparable<TestRequirement> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		TestRequirement other = (TestRequirement) obj;
+		AbstractTestRequirement other = (AbstractTestRequirement) obj;
 		if (className == null) {
 			if (other.className != null)
 				return false;
 		} else if (!className.equals(other.className))
 			return false;
-		if (lineNumber == null) {
-			if (other.lineNumber != null)
-				return false;
-		} else if (!lineNumber.equals(other.lineNumber))
-			return false;
 		return true;
 	}
 
-	public int compareTo(TestRequirement o) {
+	public int compareTo(AbstractTestRequirement o) {
 		return this.suspiciousness.compareTo(o.getSuspiciousness());
 	}
 

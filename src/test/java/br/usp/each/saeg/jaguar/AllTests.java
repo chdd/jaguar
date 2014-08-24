@@ -7,7 +7,7 @@ import br.usp.each.saeg.jaguar.runner.JaguarSuite;
 import br.usp.each.saeg.jaguar.runner.JaguarRunnerHeuristic;
 
 @RunWith(JaguarSuite.class)
-@JaguarRunnerHeuristic(OchiaiHeuristic.class)
+@JaguarRunnerHeuristic(value=OchiaiHeuristic.class, isDataflow=true )
 public class AllTests {
 
 }

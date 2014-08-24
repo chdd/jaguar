@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class TestCriteria {
 
 	private String heuristicType;
-	private String requirementType;
+	private Requirement.Type requirementType;
 	private Collection<Package> packages;
 
 	@XmlAttribute(name = "heuristic-type")
@@ -24,11 +24,11 @@ public class TestCriteria {
 	}
 
 	@XmlAttribute(name = "requirement-type")
-	public String getRequirementType() {
+	public Requirement.Type getRequirementType() {
 		return requirementType;
 	}
 
-	public void setRequirementType(String requirementType) {
+	public void setRequirementType(Requirement.Type requirementType) {
 		this.requirementType = requirementType;
 	}
 

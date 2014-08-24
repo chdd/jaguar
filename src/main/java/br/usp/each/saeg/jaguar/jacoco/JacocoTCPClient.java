@@ -6,9 +6,9 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import org.jacoco.core.data.AbstractExecutionDataStore;
-import org.jacoco.core.data.DataflowExecutionDataStore;
 import org.jacoco.core.data.ExecutionDataStore;
 import org.jacoco.core.data.SessionInfoStore;
+import org.jacoco.core.data.dua.DataflowExecutionDataStore;
 import org.jacoco.core.runtime.RemoteControlReader;
 import org.jacoco.core.runtime.RemoteControlWriter;
 

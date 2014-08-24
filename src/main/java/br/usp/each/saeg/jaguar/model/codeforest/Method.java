@@ -6,8 +6,10 @@ import java.util.Collection;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 
 @XmlRootElement(name = "class")
+@XmlSeeAlso({DuaRequirement.class,LineRequirement.class})
 public class Method extends SuspiciousElement {
 
 	private Integer id;
@@ -42,11 +44,16 @@ public class Method extends SuspiciousElement {
 		return suspiciousValue;
 	}
 
-	@XmlElement(name = "requirement")
+//	@XmlElements({
+//	    @XmlElement(name="line", type=LineRequirement.class),
+//	    @XmlElement(name="dua", type=DuaRequirement.class)
+//	})
+	
+	@XmlElement
 	public Collection<Requirement> getRequirements() {
 		return requirements;
 	}
-
+	
 	public void setRequirements(Collection<Requirement> requirements) {
 		this.requirements = requirements;
 	}

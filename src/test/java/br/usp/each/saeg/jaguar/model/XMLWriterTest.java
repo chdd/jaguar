@@ -16,8 +16,10 @@ import br.usp.each.saeg.jaguar.model.codeforest.Class;
 import br.usp.each.saeg.jaguar.model.codeforest.FaultClassification;
 import br.usp.each.saeg.jaguar.model.codeforest.Method;
 import br.usp.each.saeg.jaguar.model.codeforest.Package;
+import br.usp.each.saeg.jaguar.model.codeforest.LineRequirement;
 import br.usp.each.saeg.jaguar.model.codeforest.Requirement;
 import br.usp.each.saeg.jaguar.model.codeforest.TestCriteria;
+import br.usp.each.saeg.jaguar.model.codeforest.Requirement.Type;
 
 public class XMLWriterTest {
 
@@ -39,17 +41,17 @@ public class XMLWriterTest {
 	}
 
 	private static FaultClassification createFaultClassificationObject() {
-		Requirement requirement1 = new Requirement();
+		LineRequirement requirement1 = new LineRequirement();
 		requirement1.setLocation(61);
 		requirement1.setName("0");
 		requirement1.setSuspiciousValue(0.0);
 
-		Requirement requirement2 = new Requirement();
+		LineRequirement requirement2 = new LineRequirement();
 		requirement2.setLocation(100);
 		requirement2.setName("108");
 		requirement2.setSuspiciousValue(0.0);
 
-		List<Requirement> requirementList = new ArrayList<Requirement>();
+		Collection<Requirement> requirementList = new ArrayList<Requirement>();
 		requirementList.add(requirement1);
 		requirementList.add(requirement2);
 
@@ -104,7 +106,7 @@ public class XMLWriterTest {
 
 		TestCriteria testCriteria = new TestCriteria();
 		testCriteria.setHeuristicType("TARANTULA");
-		testCriteria.setRequirementType("NODE");
+		testCriteria.setRequirementType(Type.LINE);
 
 		List<Package> packageSet = new ArrayList<Package>();
 		packageSet.add(package1);

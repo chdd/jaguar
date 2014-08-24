@@ -2,6 +2,7 @@ package br.usp.each.saeg.jaguar;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.Authenticator.RequestorType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,19 +13,25 @@ import org.jacoco.core.analysis.AbstractAnalyzer;
 import org.jacoco.core.analysis.Analyzer;
 import org.jacoco.core.analysis.CoverageBuilder;
 import org.jacoco.core.analysis.DataflowAnalyzer;
-import org.jacoco.core.analysis.DuaCoverageBuilder;
 import org.jacoco.core.analysis.IClassCoverage;
 import org.jacoco.core.analysis.ILine;
 import org.jacoco.core.analysis.IMethodCoverage;
+import org.jacoco.core.analysis.dua.DuaCoverageBuilder;
+import org.jacoco.core.analysis.dua.IDua;
+import org.jacoco.core.analysis.dua.IDuaClassCoverage;
+import org.jacoco.core.analysis.dua.IDuaMethodCoverage;
 import org.jacoco.core.data.AbstractExecutionDataStore;
-import org.jacoco.core.data.DataflowExecutionDataStore;
+import org.jacoco.core.data.dua.DataflowExecutionDataStore;
 
 import br.usp.each.saeg.jaguar.builder.CodeForestXmlBuilder;
 import br.usp.each.saeg.jaguar.heuristic.Heuristic;
 import br.usp.each.saeg.jaguar.heuristic.HeuristicCalculator;
 import br.usp.each.saeg.jaguar.infra.StringUtils;
+import br.usp.each.saeg.jaguar.model.codeforest.Requirement;
 import br.usp.each.saeg.jaguar.model.core.CoverageStatus;
-import br.usp.each.saeg.jaguar.model.core.TestRequirement;
+import br.usp.each.saeg.jaguar.model.core.requirement.AbstractTestRequirement;
+import br.usp.each.saeg.jaguar.model.core.requirement.DuaTestRequirement;
+import br.usp.each.saeg.jaguar.model.core.requirement.LineTestRequirement;
 
 /**
  * This class store the coverage information received from Jacoco and generate a
@@ -37,7 +44,7 @@ public class Jaguar {
 	private static final String XML_NAME = "codeforest.xml";
 	private int nTests = 0;
 	private int nTestsFailed = 0;
-	private HashMap<Integer, TestRequirement> testRequirements = new HashMap<Integer, TestRequirement>();
+	private HashMap<Integer, AbstractTestRequirement> testRequirements = new HashMap<Integer, AbstractTestRequirement>();
 	private Heuristic heuristic;
 	private File classesDir;
 	private Boolean isDataflow;
@@ -55,9 +62,9 @@ public class Jaguar {
 		this.classesDir = classesDir;
 		this.isDataflow = isDataflow;
 	}
-	
+
 	public Jaguar(Heuristic heuristic, File classesDir) {
-		this(heuristic,classesDir,false);
+		this(heuristic, classesDir, false);
 	}
 
 	/**
@@ -67,17 +74,17 @@ public class Jaguar {
 	 *            the covarege data from Jacoco
 	 * @param currentTestFailed
 	 *            result of the test
-	 * @throws IOException 
+	 * @throws IOException
 	 * 
 	 */
 	public void collect(final AbstractExecutionDataStore executionData, boolean currentTestFailed) throws IOException {
 		System.out.println("Jaguar.collect");
-		if (executionData.getClass().equals(DataflowExecutionDataStore.class)){
+		if (executionData instanceof DataflowExecutionDataStore) {
 			DuaCoverageBuilder duaCoverageBuilder = new DuaCoverageBuilder();
 			AbstractAnalyzer analyzer = new DataflowAnalyzer(executionData, duaCoverageBuilder);
 			analyzer.analyzeAll(classesDir);
 			collectDuaCoverage(currentTestFailed, duaCoverageBuilder);
-		}else{
+		} else {
 			CoverageBuilder coverageVisitor = new CoverageBuilder();
 			AbstractAnalyzer analyzer = new Analyzer(executionData, coverageVisitor);
 			analyzer.analyzeAll(classesDir);
@@ -86,13 +93,47 @@ public class Jaguar {
 
 	}
 
-	private void collectDuaCoverage(boolean currentTestFailed,
-			DuaCoverageBuilder coverageVisitor) {
-		//TODO
+	private void collectDuaCoverage(boolean currentTestFailed, DuaCoverageBuilder coverageVisitor) {
+		for (IDuaClassCoverage clazz : coverageVisitor.getClasses()) {
+			System.out.println("class = " + clazz.getName());
+			for (IDuaMethodCoverage method : clazz.getMethods()) {
+				System.out.println("metodoDesc = " + method.getDesc() + "metodo");
+				for (IDua dua : method.getDuas()) {
+					CoverageStatus coverageStatus = CoverageStatus.as(dua.getStatus());
+					if (CoverageStatus.FULLY_COVERED == coverageStatus) {
+						updateRequirement(clazz, method, dua, currentTestFailed);
+					}
+
+				}
+			}
+		}
 	}
 
-	private void collectLineCoverage(boolean currentTestFailed,
-			final CoverageBuilder coverageVisitor) {
+	private void updateRequirement(IDuaClassCoverage clazz, IDuaMethodCoverage method, IDua dua, boolean failed) {
+		AbstractTestRequirement testRequirement = new DuaTestRequirement(clazz.getName(), dua.getDef(), dua.getUse(),
+				dua.getTarget(), dua.getVar());
+		AbstractTestRequirement foundRequirement = testRequirements.get(testRequirement.hashCode());
+
+		if (foundRequirement == null) {
+			testRequirement.setClassFirstLine(0); //TODO pegar a linha da primeira classe
+			testRequirement.setMethodLine(dua.getDef().iterator().next().intValue()); // TODO pegar a primeira linha do metodo
+			String parametros = StringUtils.getParametros(method.getDesc());
+			testRequirement.setMethodSignature(method.getName() + "(" + parametros + ")");
+			testRequirement.setMethodId(method.getId());
+			testRequirements.put(testRequirement.hashCode(), testRequirement);
+		} else {
+			testRequirement = foundRequirement;
+		}
+
+		if (failed) {
+			testRequirement.increaseFailed();
+		} else {
+			testRequirement.increasePassed();
+		}
+
+	}
+
+	private void collectLineCoverage(boolean currentTestFailed, final CoverageBuilder coverageVisitor) {
 		for (IClassCoverage clazz : coverageVisitor.getClasses()) {
 			CoverageStatus coverageStatus = CoverageStatus.as(clazz.getClassCounter().getStatus());
 			if (CoverageStatus.FULLY_COVERED == coverageStatus || CoverageStatus.PARTLY_COVERED == coverageStatus) {
@@ -127,8 +168,8 @@ public class Jaguar {
 	 * 
 	 */
 	private void updateRequirement(IClassCoverage clazz, int lineNumber, boolean failed) {
-		TestRequirement testRequirement = new TestRequirement(clazz.getName(), lineNumber);
-		TestRequirement foundRequirement = testRequirements.get(testRequirement.hashCode());
+		AbstractTestRequirement testRequirement = new LineTestRequirement(clazz.getName(), lineNumber);
+		AbstractTestRequirement foundRequirement = testRequirements.get(testRequirement.hashCode());
 
 		if (foundRequirement == null) {
 			testRequirement.setClassFirstLine(clazz.getFirstLine());
@@ -147,7 +188,7 @@ public class Jaguar {
 		} else {
 			testRequirement = foundRequirement;
 		}
-		
+
 		if (failed) {
 			testRequirement.increaseFailed();
 		} else {
@@ -162,11 +203,11 @@ public class Jaguar {
 	 * @return
 	 * 
 	 */
-	public ArrayList<TestRequirement> generateRank() {
+	public ArrayList<AbstractTestRequirement> generateRank() {
 		System.out.println("Rank calculation started...");
 		HeuristicCalculator calc = new HeuristicCalculator(heuristic, testRequirements.values(), nTests - nTestsFailed,
 				nTestsFailed);
-		ArrayList<TestRequirement> result = calc.calculateRank();
+		ArrayList<AbstractTestRequirement> result = calc.calculateRank();
 		System.out.println("Rank calculation finished.");
 		return result;
 	}
@@ -177,18 +218,35 @@ public class Jaguar {
 	 * @param testRequirements
 	 * @param projectDir
 	 */
-	public void generateXML(ArrayList<TestRequirement> testRequirements, File projectDir) {
+	public void generateXML(ArrayList<AbstractTestRequirement> testRequirements, File projectDir) {
 		System.out.println("XML generation started.");
-		CodeForestXmlBuilder xmlBuilder = new CodeForestXmlBuilder();
-		xmlBuilder.project("fault localization");
-		xmlBuilder.heuristic(heuristic);
-		xmlBuilder.requirementType("LINE");
-		for (TestRequirement testRequirement : testRequirements) {
+		CodeForestXmlBuilder xmlBuilder = createXmlBuilder(testRequirements);
+		for (AbstractTestRequirement testRequirement : testRequirements) {
 			xmlBuilder.addTestRequirement(testRequirement);
 		}
 		File xmlFile = new File(projectDir.getAbsolutePath() + System.getProperty("file.separator") + XML_NAME);
 		JAXB.marshal(xmlBuilder.build(), xmlFile);
-		System.out.println("XML generation finished at " + xmlFile.getAbsolutePath());
+		System.out.println("XML generation finished at: " + xmlFile.getAbsolutePath());
+	}
+
+	private CodeForestXmlBuilder createXmlBuilder(ArrayList<AbstractTestRequirement> testRequirements) {
+		CodeForestXmlBuilder xmlBuilder = new CodeForestXmlBuilder();
+		xmlBuilder.project("fault localization");
+		xmlBuilder.heuristic(heuristic);
+		setType(testRequirements, xmlBuilder);
+		return xmlBuilder;
+	}
+
+	private void setType(ArrayList<AbstractTestRequirement> testRequirements, CodeForestXmlBuilder xmlBuilder) {
+		if (testRequirements.isEmpty()){
+			return;
+		}
+		
+		if (AbstractTestRequirement.Type.LINE == testRequirements.iterator().next().getType()){
+			xmlBuilder.requirementType(Requirement.Type.LINE);
+		}else if(AbstractTestRequirement.Type.LINE == testRequirements.iterator().next().getType()){
+			xmlBuilder.requirementType(Requirement.Type.DUA);
+		}
 	}
 
 	public int getnTests() {
@@ -207,4 +265,7 @@ public class Jaguar {
 		return ++nTestsFailed;
 	}
 
+	public static void main(String[] args) {
+		System.out.println(StringUtils.getParametros("([II)I"));
+	}
 }

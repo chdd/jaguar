@@ -1,5 +1,6 @@
 package br.usp.each.saeg.jaguar.builder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,20 +8,24 @@ import org.apache.commons.lang.StringUtils;
 
 import br.usp.each.saeg.jaguar.heuristic.Heuristic;
 import br.usp.each.saeg.jaguar.model.codeforest.Class;
+import br.usp.each.saeg.jaguar.model.codeforest.DuaRequirement;
 import br.usp.each.saeg.jaguar.model.codeforest.FaultClassification;
+import br.usp.each.saeg.jaguar.model.codeforest.LineRequirement;
 import br.usp.each.saeg.jaguar.model.codeforest.Method;
 import br.usp.each.saeg.jaguar.model.codeforest.Package;
 import br.usp.each.saeg.jaguar.model.codeforest.Requirement;
 import br.usp.each.saeg.jaguar.model.codeforest.SuspiciousElement;
 import br.usp.each.saeg.jaguar.model.codeforest.TestCriteria;
-import br.usp.each.saeg.jaguar.model.core.TestRequirement;
+import br.usp.each.saeg.jaguar.model.core.requirement.AbstractTestRequirement;
+import br.usp.each.saeg.jaguar.model.core.requirement.DuaTestRequirement;
+import br.usp.each.saeg.jaguar.model.core.requirement.LineTestRequirement;
 
 public class CodeForestXmlBuilder {
 
 	private Integer methodPosition = 1;
 	private String project;
 	private Heuristic heuristic;
-	private String requirementType;
+	private Requirement.Type requirementType;
 	private Map<Integer, Package> packageMap = new HashMap<Integer, Package>();
 
 	public CodeForestXmlBuilder() {
@@ -44,14 +49,14 @@ public class CodeForestXmlBuilder {
 	/**
 	 * Set the type of requirement (e.g Line, Node, Dua)
 	 */
-	public void requirementType(String requirementType) {
+	public void requirementType(Requirement.Type requirementType) {
 		this.requirementType = requirementType;
 	}
 
 	/**
 	 * Add the test requirement to the code forest structure.
 	 */
-	public void addTestRequirement(TestRequirement testRequirement) {
+	public void addTestRequirement(AbstractTestRequirement testRequirement) {
 		addRequirement(testRequirement,
 				addMethod(testRequirement, addClass(testRequirement, addPackage(testRequirement))));
 	}
@@ -63,7 +68,7 @@ public class CodeForestXmlBuilder {
 	 *            the test requirement holding the requirement info
 	 * @return the package
 	 */
-	private Package addPackage(TestRequirement testRequirement) {
+	private Package addPackage(AbstractTestRequirement testRequirement) {
 		String packageName = getPackageName(testRequirement.getClassName());
 		Package currentPackage = packageMap.get(packageName.hashCode());
 		if (currentPackage == null) {
@@ -84,7 +89,7 @@ public class CodeForestXmlBuilder {
 	 *            the package to add the class
 	 * @return
 	 */
-	private Class addClass(TestRequirement testRequirement, Package pakkage) {
+	private Class addClass(AbstractTestRequirement testRequirement, Package pakkage) {
 		String className = replaceSlashByDot(testRequirement.getClassName());
 		Class currentClass = null;
 		for (Class clazz : pakkage.getClasses()) {
@@ -113,7 +118,7 @@ public class CodeForestXmlBuilder {
 	 * 
 	 * @return return the method
 	 */
-	private Method addMethod(TestRequirement testRequirement, Class currentClass) {
+	private Method addMethod(AbstractTestRequirement testRequirement, Class currentClass) {
 		String methodName = testRequirement.getMethodSignature();
 		Method currentMethod = null;
 		for (Method method : currentClass.getMethods()) {
@@ -141,12 +146,35 @@ public class CodeForestXmlBuilder {
 	 * @param currentMethod
 	 *            the method to add the requirement.
 	 */
-	private void addRequirement(TestRequirement testRequirement, Method currentMethod) {
-		Requirement requirement = new Requirement();
-		requirement.setName(testRequirement.getLineNumber().toString());
-		requirement.setLocation(testRequirement.getLineNumber());
-		requirement.setSuspiciousValue(testRequirement.getSuspiciousness());
-		currentMethod.getRequirements().add(requirement);
+	private void addRequirement(AbstractTestRequirement testRequirement, Method currentMethod) {
+		if (testRequirement instanceof DuaTestRequirement) {
+
+			DuaTestRequirement duaRequirement = (DuaTestRequirement) testRequirement;
+			DuaRequirement requirement = new DuaRequirement();
+
+			requirement.setDef(duaRequirement.getDef());
+			requirement.setUse(duaRequirement.getUse());
+			requirement.setTarget(duaRequirement.getTarget());
+			requirement.setVar(duaRequirement.getVar());
+
+			Integer firstDefLine = duaRequirement.getDef().iterator().next();
+			requirement.setName(firstDefLine.toString());
+			requirement.setLocation(firstDefLine);
+			requirement.setSuspiciousValue(testRequirement.getSuspiciousness());
+
+			currentMethod.getRequirements().add(requirement);
+
+		} else if (testRequirement instanceof LineTestRequirement) {
+
+			LineTestRequirement lineRequirement = (LineTestRequirement) testRequirement;
+			LineRequirement requirement = new LineRequirement();
+
+			requirement.setName(lineRequirement.getLineNumber().toString());
+			requirement.setLocation(lineRequirement.getLineNumber());
+			requirement.setSuspiciousValue(testRequirement.getSuspiciousness());
+
+			currentMethod.getRequirements().add(requirement);
+		}
 	}
 
 	/**
@@ -164,7 +192,7 @@ public class CodeForestXmlBuilder {
 	private String replaceSlashByDot(String className) {
 		return className.replace('/', '.');
 	}
-	
+
 	/**
 	 * Create the object used to generate the CodeForest xml.
 	 */
@@ -188,8 +216,8 @@ public class CodeForestXmlBuilder {
 	}
 
 	/**
-	 * Set the suspicious value based on the children.
-	 * The object will have its children maximum suspicious value.
+	 * Set the suspicious value based on the children. The object will have its
+	 * children maximum suspicious value.
 	 * 
 	 * @param element
 	 */

@@ -3,21 +3,23 @@ package br.usp.each.saeg.jaguar.builder;
 import java.util.Iterator;
 
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import br.usp.each.saeg.jaguar.heuristic.impl.TarantulaHeuristic;
 import br.usp.each.saeg.jaguar.model.codeforest.Class;
 import br.usp.each.saeg.jaguar.model.codeforest.FaultClassification;
+import br.usp.each.saeg.jaguar.model.codeforest.LineRequirement;
 import br.usp.each.saeg.jaguar.model.codeforest.Method;
 import br.usp.each.saeg.jaguar.model.codeforest.Package;
 import br.usp.each.saeg.jaguar.model.codeforest.Requirement;
-import br.usp.each.saeg.jaguar.model.core.TestRequirement;
+import br.usp.each.saeg.jaguar.model.core.requirement.AbstractTestRequirement;
+import br.usp.each.saeg.jaguar.model.core.requirement.AbstractTestRequirement.Type;
+import br.usp.each.saeg.jaguar.model.core.requirement.LineTestRequirement;
 
 public class CodeForestXMLBuilderTest {
 
 	private static final String PROJECT_NAME = "projeto";
-	private static final String REQUIREMENT_TYPE = "linha";
+	private static final Requirement.Type REQUIREMENT_TYPE = Requirement.Type.LINE;
 	private static final String CLASS_NAME1 = "br.usp.each.saeg.jaguar.class1";
 	private static final Integer CLASS_FIRST_LINE = 5;
 	private static final Integer METHOD_ID = 0;
@@ -25,13 +27,13 @@ public class CodeForestXMLBuilderTest {
 	private static final String METHOD_SIGNATURE = "main()";
 	private static final Double SUSPICIOUSNESS = 0.91;
 	private static final Integer REQUIREMENT_LINE_NUMBER = 10;
-	
-	private CodeForestXmlBuilder createSimpleXmlBuilder(){
+
+	private CodeForestXmlBuilder createSimpleXmlBuilder() {
 		CodeForestXmlBuilder xml = new CodeForestXmlBuilder();
 		xml.project(PROJECT_NAME);
 		xml.requirementType(REQUIREMENT_TYPE);
 		xml.heuristic(new TarantulaHeuristic());
-		TestRequirement requirement1 = new TestRequirement(CLASS_NAME1, REQUIREMENT_LINE_NUMBER);
+		AbstractTestRequirement requirement1 = new LineTestRequirement(CLASS_NAME1, REQUIREMENT_LINE_NUMBER);
 		requirement1.setClassFirstLine(CLASS_FIRST_LINE);
 		requirement1.setMethodId(METHOD_ID);
 		requirement1.setMethodLine(METHOD_FIRST_LINE);
@@ -44,7 +46,7 @@ public class CodeForestXMLBuilderTest {
 	@Test
 	public void simple() {
 		FaultClassification simpleXml = createSimpleXmlBuilder().build();
-		
+
 		// Assert equals
 		// Project
 		Assert.assertEquals(PROJECT_NAME, simpleXml.getProject());
@@ -95,7 +97,7 @@ public class CodeForestXMLBuilderTest {
 		String className3 = "br.usp.each.saeg.jaguar.core.element";
 
 		// Requisitos
-		TestRequirement requirement2 = new TestRequirement(CLASS_NAME1, 9);
+		AbstractTestRequirement requirement2 = new LineTestRequirement(CLASS_NAME1, 9);
 		requirement2.setClassFirstLine(CLASS_FIRST_LINE);
 		requirement2.setMethodId(METHOD_ID);
 		requirement2.setMethodLine(METHOD_FIRST_LINE);
@@ -103,7 +105,7 @@ public class CodeForestXMLBuilderTest {
 		requirement2.setSuspiciousness(SUSPICIOUSNESS);
 		xmlBuilder.addTestRequirement(requirement2);
 
-		TestRequirement requirement3 = new TestRequirement(CLASS_NAME1, 21);
+		AbstractTestRequirement requirement3 = new LineTestRequirement(CLASS_NAME1, 21);
 		requirement3.setClassFirstLine(CLASS_FIRST_LINE);
 		requirement3.setMethodId(1);
 		requirement3.setMethodLine(21);
@@ -111,7 +113,7 @@ public class CodeForestXMLBuilderTest {
 		requirement3.setSuspiciousness(SUSPICIOUSNESS);
 		xmlBuilder.addTestRequirement(requirement3);
 
-		TestRequirement requirement4 = new TestRequirement(className2, 5);
+		AbstractTestRequirement requirement4 = new LineTestRequirement(className2, 5);
 		requirement4.setClassFirstLine(3);
 		requirement4.setMethodId(0);
 		requirement4.setMethodLine(5);
@@ -119,7 +121,7 @@ public class CodeForestXMLBuilderTest {
 		requirement4.setSuspiciousness(SUSPICIOUSNESS);
 		xmlBuilder.addTestRequirement(requirement4);
 
-		TestRequirement requirement5 = new TestRequirement(className3, 13);
+		AbstractTestRequirement requirement5 = new LineTestRequirement(className3, 13);
 		requirement5.setClassFirstLine(10);
 		requirement5.setMethodId(0);
 		requirement5.setMethodLine(13);
@@ -127,7 +129,7 @@ public class CodeForestXMLBuilderTest {
 		requirement5.setSuspiciousness(SUSPICIOUSNESS);
 		xmlBuilder.addTestRequirement(requirement5);
 
-		TestRequirement requirement6 = new TestRequirement(className3, 14);
+		AbstractTestRequirement requirement6 = new LineTestRequirement(className3, 14);
 		requirement6.setClassFirstLine(10);
 		requirement6.setMethodId(0);
 		requirement6.setMethodLine(13);
@@ -135,7 +137,7 @@ public class CodeForestXMLBuilderTest {
 		requirement6.setSuspiciousness(SUSPICIOUSNESS);
 		xmlBuilder.addTestRequirement(requirement6);
 
-		TestRequirement requirement7 = new TestRequirement(className3, 15);
+		AbstractTestRequirement requirement7 = new LineTestRequirement(className3, 15);
 		requirement7.setClassFirstLine(10);
 		requirement7.setMethodId(0);
 		requirement7.setMethodLine(13);
@@ -143,7 +145,7 @@ public class CodeForestXMLBuilderTest {
 		requirement7.setSuspiciousness(SUSPICIOUSNESS);
 		xmlBuilder.addTestRequirement(requirement7);
 
-		TestRequirement requirement8 = new TestRequirement(className3, 16);
+		AbstractTestRequirement requirement8 = new LineTestRequirement(className3, 16);
 		requirement8.setClassFirstLine(10);
 		requirement8.setMethodId(0);
 		requirement8.setMethodLine(13);
@@ -190,7 +192,7 @@ public class CodeForestXMLBuilderTest {
 
 		// Requirement 5
 		Assert.assertEquals(4, method4.getRequirements().size());
-		Iterator<Requirement> requirementIterator = method4.getRequirements().iterator();
+		Iterator<? extends Requirement> requirementIterator = method4.getRequirements().iterator();
 		Requirement requirementExpected5 = requirementIterator.next();
 		Assert.assertEquals("13", requirementExpected5.getName());
 		Assert.assertEquals(new Integer(13), requirementExpected5.getLocation());
