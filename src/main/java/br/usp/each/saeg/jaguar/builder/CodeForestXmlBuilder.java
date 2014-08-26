@@ -130,11 +130,11 @@ public class CodeForestXmlBuilder {
 		if (currentMethod == null) {
 			currentMethod = new Method();
 			currentMethod.setName(methodName);
-			currentMethod.setLocation(testRequirement.getMethodLine());
 			currentMethod.setId(testRequirement.getMethodId());
 			currentMethod.setPosition(methodPosition++);
 			currentClass.getMethods().add(currentMethod);
 		}
+		currentMethod.setLocation(testRequirement.getMethodLine());
 		return currentMethod;
 	}
 

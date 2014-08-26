@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import javax.xml.bind.JAXB;
-
+import org.eclipse.jdt.core.Signature;
 import org.jacoco.core.analysis.AbstractAnalyzer;
 import org.jacoco.core.analysis.Analyzer;
 import org.jacoco.core.analysis.CoverageBuilder;
@@ -115,10 +115,9 @@ public class Jaguar {
 		AbstractTestRequirement foundRequirement = testRequirements.get(testRequirement.hashCode());
 
 		if (foundRequirement == null) {
-			testRequirement.setClassFirstLine(0); //TODO pegar a linha da primeira classe
-			testRequirement.setMethodLine(dua.getDef().iterator().next().intValue()); // TODO pegar a primeira linha do metodo
-			String parametros = StringUtils.getParametros(method.getDesc());
-			testRequirement.setMethodSignature(method.getName() + "(" + parametros + ")");
+			testRequirement.setClassFirstLine(0);
+			testRequirement.setMethodLine(dua.getDef().iterator().next().intValue()); 
+			testRequirement.setMethodSignature(Signature.toString(method.getDesc(), method.getName(), null, false, true));
 			testRequirement.setMethodId(method.getId());
 			testRequirements.put(testRequirement.hashCode(), testRequirement);
 		} else {
