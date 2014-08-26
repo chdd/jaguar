@@ -83,14 +83,6 @@ public abstract class AbstractTestRequirement implements Comparable<AbstractTest
 		this.suspiciousness = suspiciousness;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((className == null) ? 0 : className.hashCode());
-		return result;
-	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -101,10 +93,39 @@ public abstract class AbstractTestRequirement implements Comparable<AbstractTest
 		if (getClass() != obj.getClass())
 			return false;
 		AbstractTestRequirement other = (AbstractTestRequirement) obj;
+		if (cef != other.cef)
+			return false;
+		if (cep != other.cep)
+			return false;
+		if (classFirstLine == null) {
+			if (other.classFirstLine != null)
+				return false;
+		} else if (!classFirstLine.equals(other.classFirstLine))
+			return false;
 		if (className == null) {
 			if (other.className != null)
 				return false;
 		} else if (!className.equals(other.className))
+			return false;
+		if (methodId == null) {
+			if (other.methodId != null)
+				return false;
+		} else if (!methodId.equals(other.methodId))
+			return false;
+		if (methodLine == null) {
+			if (other.methodLine != null)
+				return false;
+		} else if (!methodLine.equals(other.methodLine))
+			return false;
+		if (methodSignature == null) {
+			if (other.methodSignature != null)
+				return false;
+		} else if (!methodSignature.equals(other.methodSignature))
+			return false;
+		if (suspiciousness == null) {
+			if (other.suspiciousness != null)
+				return false;
+		} else if (!suspiciousness.equals(other.suspiciousness))
 			return false;
 		return true;
 	}

@@ -26,5 +26,27 @@ public class LineTestRequirement extends AbstractTestRequirement {
 		result = prime * result + ((lineNumber == null) ? 0 : lineNumber.hashCode());
 		return result;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		LineTestRequirement other = (LineTestRequirement) obj;
+		if (className == null) {
+			if (other.className != null)
+				return false;
+		} else if (!className.equals(other.className))
+			return false;
+		if (lineNumber == null) {
+			if (other.lineNumber != null)
+				return false;
+		} else if (!lineNumber.equals(other.lineNumber))
+			return false;
+		return true;
+	}
 
 }
