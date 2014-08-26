@@ -57,7 +57,7 @@ public class DuaTestRequirement extends AbstractTestRequirement {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = super.hashCode();
+		int result = 1;//super.hashCode() test dos hashcode iguais falhava
 		result = prime * result + ((className == null) ? 0 : className.hashCode());
 		result = prime * result + ((def == null) ? 0 : def.hashCode());
 		result = prime * result + ((target == null) ? 0 : target.hashCode());
@@ -70,7 +70,7 @@ public class DuaTestRequirement extends AbstractTestRequirement {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!super.equals(obj))
+		if (obj == null)//!super.equals(obj) era isso e os testes passavam quando nao era para passar
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
