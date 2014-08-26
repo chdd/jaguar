@@ -6,7 +6,7 @@ import org.junit.Test;
 import br.usp.each.saeg.jaguar.model.core.requirement.AbstractTestRequirement;
 import br.usp.each.saeg.jaguar.model.core.requirement.LineTestRequirement;
 
-public class RequirementTest {
+public class LineRequirementTest {
 
 	
 	private static final String CLASS_NAME1 = "br.usp.each.saeg.jaguar.test1";
