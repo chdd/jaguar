@@ -78,7 +78,7 @@ public class Jaguar {
 	 * 
 	 */
 	public void collect(final AbstractExecutionDataStore executionData, boolean currentTestFailed) throws IOException {
-		System.out.println("Jaguar.collect");
+//		System.out.println("Jaguar.collect");
 		if (executionData instanceof DataflowExecutionDataStore) {
 			DuaCoverageBuilder duaCoverageBuilder = new DuaCoverageBuilder();
 			AbstractAnalyzer analyzer = new DataflowAnalyzer(executionData, duaCoverageBuilder);
@@ -95,9 +95,9 @@ public class Jaguar {
 
 	private void collectDuaCoverage(boolean currentTestFailed, DuaCoverageBuilder coverageVisitor) {
 		for (IDuaClassCoverage clazz : coverageVisitor.getClasses()) {
-			System.out.println("class = " + clazz.getName());
+			//System.out.println("class = " + clazz.getName());
 			for (IDuaMethodCoverage method : clazz.getMethods()) {
-				System.out.println("metodoDesc = " + method.getDesc() + "metodo");
+			//	System.out.println("metodoDesc = " + method.getDesc() + "metodo");
 				for (IDua dua : method.getDuas()) {
 					CoverageStatus coverageStatus = CoverageStatus.as(dua.getStatus());
 					if (CoverageStatus.FULLY_COVERED == coverageStatus) {
@@ -178,8 +178,7 @@ public class Jaguar {
 				methodId++;
 				if (method.getLine(lineNumber) != org.jacoco.core.internal.analysis.LineImpl.EMPTY) {
 					testRequirement.setMethodLine(method.getFirstLine());
-					String parametros = StringUtils.getParametros(method.getDesc());
-					testRequirement.setMethodSignature(method.getName() + "(" + parametros + ")");
+					testRequirement.setMethodSignature(Signature.toString(method.getDesc(), method.getName(), null, false, true));
 					testRequirement.setMethodId(methodId);
 				}
 			}

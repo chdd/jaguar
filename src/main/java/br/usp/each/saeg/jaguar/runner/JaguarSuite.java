@@ -92,7 +92,7 @@ public class JaguarSuite extends Suite {
 		initializeBeforeTests();
 
 		notifier.addListener(new JaguarRunListener(jaguar, tcpClient));
-
+		
 		super.run(notifier);
 
 		tearDown();
