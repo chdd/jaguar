@@ -57,8 +57,10 @@ public class CodeForestXmlBuilder {
 	 * Add the test requirement to the code forest structure.
 	 */
 	public void addTestRequirement(AbstractTestRequirement testRequirement) {
-		addRequirement(testRequirement,
-				addMethod(testRequirement, addClass(testRequirement, addPackage(testRequirement))));
+		addRequirement(
+				testRequirement,
+				addMethod(testRequirement,
+						addClass(testRequirement, addPackage(testRequirement))));
 	}
 
 	/**
@@ -89,7 +91,8 @@ public class CodeForestXmlBuilder {
 	 *            the package to add the class
 	 * @return
 	 */
-	private Class addClass(AbstractTestRequirement testRequirement, Package pakkage) {
+	private Class addClass(AbstractTestRequirement testRequirement,
+			Package pakkage) {
 		String className = replaceSlashByDot(testRequirement.getClassName());
 		Class currentClass = null;
 		for (Class clazz : pakkage.getClasses()) {
@@ -101,7 +104,8 @@ public class CodeForestXmlBuilder {
 		if (currentClass == null) {
 			currentClass = new Class();
 			currentClass.setName(className);
-			currentClass.setLocation(new Integer(testRequirement.getClassFirstLine()));
+			currentClass.setLocation(new Integer(testRequirement
+					.getClassFirstLine()));
 			pakkage.getClasses().add(currentClass);
 		}
 		return currentClass;
@@ -118,7 +122,8 @@ public class CodeForestXmlBuilder {
 	 * 
 	 * @return return the method
 	 */
-	private Method addMethod(AbstractTestRequirement testRequirement, Class currentClass) {
+	private Method addMethod(AbstractTestRequirement testRequirement,
+			Class currentClass) {
 		String methodName = testRequirement.getMethodSignature();
 		Method currentMethod = null;
 		for (Method method : currentClass.getMethods()) {
@@ -146,7 +151,8 @@ public class CodeForestXmlBuilder {
 	 * @param currentMethod
 	 *            the method to add the requirement.
 	 */
-	private void addRequirement(AbstractTestRequirement testRequirement, Method currentMethod) {
+	private void addRequirement(AbstractTestRequirement testRequirement,
+			Method currentMethod) {
 		if (testRequirement instanceof DuaTestRequirement) {
 
 			DuaTestRequirement duaRequirement = (DuaTestRequirement) testRequirement;
@@ -156,6 +162,7 @@ public class CodeForestXmlBuilder {
 			requirement.setUse(duaRequirement.getUse());
 			requirement.setTarget(duaRequirement.getTarget());
 			requirement.setVar(duaRequirement.getVar());
+			requirement.setCovered(duaRequirement.getCovered());
 
 			Integer firstDefLine = duaRequirement.getDef().iterator().next();
 			requirement.setName(firstDefLine.toString());
@@ -203,8 +210,11 @@ public class CodeForestXmlBuilder {
 		}
 
 		TestCriteria testCriteria = new TestCriteria();
-		testCriteria.setHeuristicType(StringUtils.upperCase(StringUtils.removeEndIgnoreCase(heuristic.getClass()
-				.getSimpleName(), "heuristic")));
+		if (heuristic != null) {
+			testCriteria.setHeuristicType(StringUtils.upperCase(StringUtils
+					.removeEndIgnoreCase(heuristic.getClass().getSimpleName(),
+							"heuristic")));
+		}
 		testCriteria.setRequirementType(requirementType);
 		testCriteria.setPackages(packageMap.values());
 
@@ -224,7 +234,8 @@ public class CodeForestXmlBuilder {
 	private void setSuspicous(SuspiciousElement element) {
 		for (SuspiciousElement child : element.getChildren()) {
 			setSuspicous(child);
-			element.updateSupicousness(child.getSuspiciousValue(), child.getNumber());
+			element.updateSupicousness(child.getSuspiciousValue(),
+					child.getNumber());
 		}
 	}
 

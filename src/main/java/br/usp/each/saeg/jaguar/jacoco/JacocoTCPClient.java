@@ -46,7 +46,6 @@ public final class JacocoTCPClient {
 		// Send a dump and reset command and read the response:
 		writer.visitDumpCommand(true, true);
 		reader.read();
-
 		return executionData;
 	}
 	

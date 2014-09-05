@@ -12,6 +12,7 @@ public class DuaRequirement extends Requirement {
 	private Set<Integer> use;
 	private Set<Integer> target;
 	private String var;
+	private Boolean covered;
 	
 	@Override
 	public Type getType() {
@@ -53,5 +54,16 @@ public class DuaRequirement extends Requirement {
 	public void setVar(String var) {
 		this.var = var;
 	}
+
+	@XmlAttribute
+	public Boolean getCovered() {
+		return covered;
+	}
+
+	public void setCovered(Boolean covered) {
+		this.covered = covered;
+	}
+	
+	
 	
 }

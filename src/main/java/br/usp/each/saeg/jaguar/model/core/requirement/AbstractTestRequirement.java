@@ -11,7 +11,8 @@ public abstract class AbstractTestRequirement implements Comparable<AbstractTest
 	
 	private int cef = 0;
 	private int cep = 0;
-	private Double suspiciousness; 
+	private Double suspiciousness = 0.0;
+	private Boolean covered;
 
 	public enum Type{
 		LINE, DUA;
@@ -88,4 +89,12 @@ public abstract class AbstractTestRequirement implements Comparable<AbstractTest
 		return this.suspiciousness.compareTo(o.getSuspiciousness());
 	}
 
+	public Boolean getCovered() {
+		return covered;
+	}
+
+	public void setCovered(Boolean covered) {
+		this.covered = covered;
+	}
+	
 }
