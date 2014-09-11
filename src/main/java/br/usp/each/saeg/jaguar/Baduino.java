@@ -86,8 +86,7 @@ public class Baduino {
 
 		if (foundRequirement == null) {
 			testRequirement.setClassFirstLine(0);
-			testRequirement.setMethodLine(dua.getDef().iterator().next()
-					.intValue());
+			testRequirement.setMethodLine(dua.getDef());
 			testRequirement.setMethodSignature(Signature.toString(
 					method.getDesc(), method.getName(), null, false, true));
 			testRequirement.setMethodId(method.getId());

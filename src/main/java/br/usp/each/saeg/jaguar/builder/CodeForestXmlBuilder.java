@@ -164,7 +164,7 @@ public class CodeForestXmlBuilder {
 			requirement.setVar(duaRequirement.getVar());
 			requirement.setCovered(duaRequirement.getCovered());
 
-			Integer firstDefLine = duaRequirement.getDef().iterator().next();
+			Integer firstDefLine = duaRequirement.getDef();
 			requirement.setName(firstDefLine.toString());
 			requirement.setLocation(firstDefLine);
 			requirement.setSuspiciousValue(testRequirement.getSuspiciousness());

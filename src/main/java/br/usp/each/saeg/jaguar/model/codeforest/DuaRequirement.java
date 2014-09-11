@@ -1,16 +1,14 @@
 package br.usp.each.saeg.jaguar.model.codeforest;
 
-import java.util.Set;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "duaRequirement")
 public class DuaRequirement extends Requirement {
 
-	private Set<Integer> def;
-	private Set<Integer> use;
-	private Set<Integer> target;
+	private int def;
+	private int use;
+	private int target;
 	private String var;
 	private Boolean covered;
 	
@@ -20,29 +18,29 @@ public class DuaRequirement extends Requirement {
 	}
 
 	@XmlAttribute
-	public Set<Integer> getDef() {
+	public int getDef() {
 		return def;
 	}
 
-	public void setDef(Set<Integer> def) {
+	public void setDef(int def) {
 		this.def = def;
 	}
 
 	@XmlAttribute
-	public Set<Integer> getUse() {
+	public int getUse() {
 		return use;
 	}
 
-	public void setUse(Set<Integer> use) {
+	public void setUse(int use) {
 		this.use = use;
 	}
 
 	@XmlAttribute
-	public Set<Integer> getTarget() {
+	public int getTarget() {
 		return target;
 	}
 
-	public void setTarget(Set<Integer> target) {
+	public void setTarget(int target) {
 		this.target = target;
 	}
 
