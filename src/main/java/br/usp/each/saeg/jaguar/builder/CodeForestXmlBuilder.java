@@ -169,7 +169,7 @@ public class CodeForestXmlBuilder {
 			requirement.setLocation(firstDefLine);
 			requirement.setSuspiciousValue(testRequirement.getSuspiciousness());
 
-			currentMethod.getRequirements().add(requirement);
+			currentMethod.getRequirement().add(requirement);
 
 		} else if (testRequirement instanceof LineTestRequirement) {
 
@@ -180,7 +180,7 @@ public class CodeForestXmlBuilder {
 			requirement.setLocation(lineRequirement.getLineNumber());
 			requirement.setSuspiciousValue(testRequirement.getSuspiciousness());
 
-			currentMethod.getRequirements().add(requirement);
+			currentMethod.getRequirement().add(requirement);
 		}
 	}
 

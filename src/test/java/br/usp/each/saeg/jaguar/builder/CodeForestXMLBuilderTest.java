@@ -82,8 +82,8 @@ public class CodeForestXMLBuilderTest {
 		Assert.assertEquals(new Integer(1), method1.getPosition());
 
 		// Requirement
-		Assert.assertEquals(1, method1.getRequirements().size());
-		Requirement requirementExpected1 = method1.getRequirements().iterator().next();
+		Assert.assertEquals(1, method1.getRequirement().size());
+		Requirement requirementExpected1 = method1.getRequirement().iterator().next();
 		Assert.assertEquals(REQUIREMENT_LINE_NUMBER.toString(), requirementExpected1.getName());
 		Assert.assertEquals(SUSPICIOUSNESS, requirementExpected1.getSuspiciousValue());
 		Assert.assertEquals(REQUIREMENT_LINE_NUMBER, requirementExpected1.getLocation());
@@ -191,29 +191,29 @@ public class CodeForestXMLBuilderTest {
 		Assert.assertEquals(new Integer(4), method4.getPosition());
 
 		// Requirement 5
-		Assert.assertEquals(4, method4.getRequirements().size());
-		Iterator<? extends Requirement> requirementIterator = method4.getRequirements().iterator();
+		Assert.assertEquals(4, method4.getRequirement().size());
+		Iterator<? extends Requirement> requirementIterator = method4.getRequirement().iterator();
 		Requirement requirementExpected5 = requirementIterator.next();
 		Assert.assertEquals("13", requirementExpected5.getName());
 		Assert.assertEquals(new Integer(13), requirementExpected5.getLocation());
 		Assert.assertEquals(SUSPICIOUSNESS, requirementExpected5.getSuspiciousValue());
 
 		// Requirement 6
-		Assert.assertEquals(4, method4.getRequirements().size());
+		Assert.assertEquals(4, method4.getRequirement().size());
 		Requirement requirementExpected6 = requirementIterator.next();
 		Assert.assertEquals("14", requirementExpected6.getName());
 		Assert.assertEquals(new Integer(14), requirementExpected6.getLocation());
 		Assert.assertEquals(SUSPICIOUSNESS, requirementExpected6.getSuspiciousValue());
 
 		// Requirement 7
-		Assert.assertEquals(4, method4.getRequirements().size());
+		Assert.assertEquals(4, method4.getRequirement().size());
 		Requirement requirementExpected7 = requirementIterator.next();
 		Assert.assertEquals("15", requirementExpected7.getName());
 		Assert.assertEquals(new Integer(15), requirementExpected7.getLocation());
 		Assert.assertEquals(SUSPICIOUSNESS, requirementExpected7.getSuspiciousValue());
 
 		// Requirement 8
-		Assert.assertEquals(4, method4.getRequirements().size());
+		Assert.assertEquals(4, method4.getRequirement().size());
 		Requirement requirementExpected8 = requirementIterator.next();
 		Assert.assertEquals("16", requirementExpected8.getName());
 		Assert.assertEquals(new Integer(16), requirementExpected8.getLocation());
@@ -247,15 +247,15 @@ public class CodeForestXMLBuilderTest {
 		Assert.assertEquals(new Integer(1), method1.getPosition());
 
 		// Requirement 1
-		Assert.assertEquals(2, method1.getRequirements().size());
-		requirementIterator = method1.getRequirements().iterator();
+		Assert.assertEquals(2, method1.getRequirement().size());
+		requirementIterator = method1.getRequirement().iterator();
 		Requirement requirementExpected1 = requirementIterator.next();
 		Assert.assertEquals(REQUIREMENT_LINE_NUMBER.toString(), requirementExpected1.getName());
 		Assert.assertEquals(SUSPICIOUSNESS, requirementExpected1.getSuspiciousValue());
 		Assert.assertEquals(REQUIREMENT_LINE_NUMBER, requirementExpected1.getLocation());
 
 		// Requirement 2
-		Assert.assertEquals(2, method1.getRequirements().size());
+		Assert.assertEquals(2, method1.getRequirement().size());
 		Requirement requirementExpected2 = requirementIterator.next();
 		Assert.assertEquals("9", requirementExpected2.getName());
 		Assert.assertEquals(SUSPICIOUSNESS, requirementExpected2.getSuspiciousValue());
@@ -273,8 +273,8 @@ public class CodeForestXMLBuilderTest {
 		Assert.assertEquals(new Integer(2), method2.getPosition());
 
 		// Requirement 3
-		Assert.assertEquals(1, method2.getRequirements().size());
-		Requirement requirementExpected3 = method2.getRequirements().iterator().next();
+		Assert.assertEquals(1, method2.getRequirement().size());
+		Requirement requirementExpected3 = method2.getRequirement().iterator().next();
 		Assert.assertEquals("21", requirementExpected3.getName());
 		Assert.assertEquals(SUSPICIOUSNESS, requirementExpected3.getSuspiciousValue());
 		Assert.assertEquals(new Integer(21), requirementExpected3.getLocation());
@@ -299,8 +299,8 @@ public class CodeForestXMLBuilderTest {
 		Assert.assertEquals(new Integer(3), method1.getPosition());
 
 		// Requirement 4
-		Assert.assertEquals(1, method1.getRequirements().size());
-		Requirement requirementExpected4 = method1.getRequirements().iterator().next();
+		Assert.assertEquals(1, method1.getRequirement().size());
+		Requirement requirementExpected4 = method1.getRequirement().iterator().next();
 		Assert.assertEquals("5", requirementExpected4.getName());
 		Assert.assertEquals(SUSPICIOUSNESS, requirementExpected4.getSuspiciousValue());
 		Assert.assertEquals(new Integer(5), requirementExpected4.getLocation());

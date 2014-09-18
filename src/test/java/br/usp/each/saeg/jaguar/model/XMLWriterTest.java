@@ -62,7 +62,7 @@ public class XMLWriterTest {
 		method1.setNumber(11);
 		method1.setPosition(115);
 		method1.setSuspiciousValue(0.0);
-		method1.setRequirements(requirementList);
+		method1.setRequirement(requirementList);
 
 		Method method2 = new Method();
 		method2.setId(0);

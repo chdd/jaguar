@@ -14,11 +14,11 @@ public class Method extends SuspiciousElement {
 
 	private Integer id;
 	private Integer position;
-	private Collection<Requirement> requirements = new ArrayList<Requirement>();
+	private Collection<Requirement> requirement = new ArrayList<Requirement>();
 
 	@Override
 	public Collection<Requirement> getChildren() {
-		return getRequirements();
+		return getRequirement();
 	}
 	
 	@XmlAttribute
@@ -50,12 +50,12 @@ public class Method extends SuspiciousElement {
 //	})
 	
 	@XmlElement
-	public Collection<Requirement> getRequirements() {
-		return requirements;
+	public Collection<Requirement> getRequirement() {
+		return requirement;
 	}
 	
-	public void setRequirements(Collection<Requirement> requirements) {
-		this.requirements = requirements;
+	public void setRequirement(Collection<Requirement> requirement) {
+		this.requirement = requirement;
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class Method extends SuspiciousElement {
 		int result = super.hashCode();
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((position == null) ? 0 : position.hashCode());
-		result = prime * result + ((requirements == null) ? 0 : requirements.hashCode());
+		result = prime * result + ((requirement == null) ? 0 : requirement.hashCode());
 		return result;
 	}
 
@@ -87,17 +87,17 @@ public class Method extends SuspiciousElement {
 				return false;
 		} else if (!position.equals(other.position))
 			return false;
-		if (requirements == null) {
-			if (other.requirements != null)
+		if (requirement == null) {
+			if (other.requirement != null)
 				return false;
-		} else if (!requirements.equals(other.requirements))
+		} else if (!requirement.equals(other.requirement))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "Method [id=" + id + ", position=" + position + ", requirementList=" + requirements + ", name=" + name
+		return "Method [id=" + id + ", position=" + position + ", requirementList=" + requirement + ", name=" + name
 				+ ", number=" + number + ", location=" + location + ", suspiciousValue=" + suspiciousValue + "]";
 	}
 
