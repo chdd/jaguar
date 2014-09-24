@@ -16,6 +16,7 @@ import org.jacoco.core.analysis.dua.IDua;
 import org.jacoco.core.analysis.dua.IDuaClassCoverage;
 import org.jacoco.core.analysis.dua.IDuaMethodCoverage;
 import org.jacoco.core.data.AbstractExecutionDataStore;
+import org.objectweb.asm.Opcodes;
 
 import br.usp.each.saeg.jaguar.builder.CodeForestXmlBuilder;
 import br.usp.each.saeg.jaguar.model.codeforest.Requirement;
@@ -87,8 +88,7 @@ public class Baduino {
 		if (foundRequirement == null) {
 			testRequirement.setClassFirstLine(0);
 			testRequirement.setMethodLine(dua.getDef());
-			testRequirement.setMethodSignature(Signature.toString(
-					method.getDesc(), method.getName(), null, false, true));
+			testRequirement.setMethodSignature(getMethodName(clazz.getName(),method.getDesc(),method.getName(),method.isStaticMethod()));
 			testRequirement.setMethodId(method.getId());
 			testRequirement.setCovered(dua.getStatus() == ICounter.FULLY_COVERED);
 			testRequirements.put(testRequirement.hashCode(), testRequirement);
@@ -96,6 +96,25 @@ public class Baduino {
 			testRequirement = foundRequirement;
 		}
 
+	}
+
+	private String getMethodName(String className, String methodDesc, String methodName,boolean isStatic) {
+		String[] fullClassName = className.split("/");
+		className = fullClassName[fullClassName.length-1];
+		if(methodName.equals("<clinit>")){
+			String name = Signature.toString(methodDesc, className, null, false, false);
+			return "static "+name;
+		}else if(methodName.equals("<init>")){
+			String name = Signature.toString(methodDesc, className, null, false, false);
+			return name;
+		}else{
+			String name = Signature.toString(methodDesc, methodName, null, false,true);
+			if(isStatic){
+				return "static " + name;
+			}else{
+				return name;
+			}
+		}
 	}
 
 	// TODO javadoc

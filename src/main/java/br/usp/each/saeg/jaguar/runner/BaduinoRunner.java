@@ -2,11 +2,11 @@ package br.usp.each.saeg.jaguar.runner;
 
 import java.io.File;
 
+
 import org.junit.runner.JUnitCore;
 import org.junit.runners.model.InitializationError;
 
 import br.usp.each.saeg.jaguar.Baduino;
-import br.usp.each.saeg.jaguar.heuristic.Heuristic;
 import br.usp.each.saeg.jaguar.infra.FileUtils;
 import br.usp.each.saeg.jaguar.jacoco.JacocoTCPClient;
 
@@ -43,11 +43,9 @@ public class BaduinoRunner {
 	}
 
 	public static void main(String[] args) throws InitializationError, Exception {
-		Heuristic heuristic = (Heuristic) Class.forName(
-				"br.usp.each.saeg.jaguar.heuristic.impl." + args[0] + "Heuristic").newInstance();
-		File projectPath = new File(args[1]);
-		File sourcePath = new File(args[2]);
-		File testPath = new File(args[3]);
+		File projectPath = new File(args[0]);
+		File sourcePath = new File(args[1]);
+		File testPath = new File(args[2]);
 		new BaduinoRunner(projectPath, sourcePath, testPath).run();
 		System.out.println("End!");
 		System.exit(0);
