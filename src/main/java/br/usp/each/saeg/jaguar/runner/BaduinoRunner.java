@@ -29,6 +29,8 @@ public class BaduinoRunner {
 	}
 
 	private void run() throws Exception {
+		long time = System.currentTimeMillis();
+		
 		final Class<?>[] classes = FileUtils.findTestClasses(testDir);
 
 		final Baduino baduino = new Baduino(sourceDir);
@@ -40,6 +42,7 @@ public class BaduinoRunner {
 		
 		tcpClient.closeSocket();
 		baduino.generateXML(baduino.getTestRequirements().values(), projectDir);
+		System.out.println("Time elapse: "+((System.currentTimeMillis()-time)/1000)+"s");
 	}
 
 	public static void main(String[] args) throws InitializationError, Exception {
