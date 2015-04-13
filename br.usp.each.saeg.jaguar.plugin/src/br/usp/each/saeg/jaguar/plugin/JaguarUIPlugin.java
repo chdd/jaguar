@@ -1,23 +1,28 @@
 package br.usp.each.saeg.jaguar.plugin;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractUIPlugin {
+public class JaguarUIPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "br.usp.each.saeg.jaguar.plugin"; //$NON-NLS-1$
 
 	// The shared instance
-	private static Activator plugin;
+	private static JaguarUIPlugin plugin;
+	
+	private static final IWorkbenchWindow[] NO_WINDOWS = new IWorkbenchWindow[0];
 	
 	/**
 	 * The constructor
 	 */
-	public Activator() {
+	public JaguarUIPlugin() {
 	}
 
 	/*
@@ -43,8 +48,20 @@ public class Activator extends AbstractUIPlugin {
 	 *
 	 * @return the shared instance
 	 */
-	public static Activator getDefault() {
+	public static JaguarUIPlugin getDefault() {
 		return plugin;
 	}
+	
+    public static IWorkbenchWindow getActiveWorkbenchWindow() {
+        return PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+    }
+
+    public static IWorkbenchWindow[] getWorkbenchWindow() {
+        IWorkbenchWindow[] windows = PlatformUI.getWorkbench().getWorkbenchWindows();
+        if (ArrayUtils.isEmpty(windows)) {
+            return NO_WINDOWS;
+        }
+        return windows;
+    }
 
 }

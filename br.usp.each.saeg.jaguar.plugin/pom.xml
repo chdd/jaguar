@@ -1,0 +1,46 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>br.usp.each.saeg.jaguar</groupId>
+		<artifactId>root</artifactId>
+		<version>0.0.6-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>br.usp.each.saeg.jaguar.plugin</artifactId>
+	<packaging>eclipse-plugin</packaging>
+	
+	<properties>
+		<jacoco.plus.badua.version>0.7.1.201405082137</jacoco.plus.badua.version>
+	</properties>
+	
+	<dependencies>
+		<dependency>
+			<groupId>br.usp.each.saeg</groupId>
+			<artifactId>org.jacoco.agent</artifactId>
+			<version>{jacoco.plus.badua.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>br.usp.each.saeg</groupId>
+			<artifactId>org.jacoco.agent.rt</artifactId>
+			<version>{jacoco.plus.badua.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>br.usp.each.saeg</groupId>
+			<artifactId>org.jacoco.core</artifactId>
+			<version>{jacoco.plus.badua.version}</version>
+		</dependency>
+	</dependencies>
+	
+	<build>
+	  <plugins>
+	    <plugin>
+	      <groupId>org.eclipse.tycho</groupId>
+	      <artifactId>tycho-maven-plugin</artifactId>
+	      <extensions>true</extensions>
+	    </plugin>
+	  </plugins>
+	</build>
+	
+</project>
